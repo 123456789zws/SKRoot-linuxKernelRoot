@@ -1,11 +1,43 @@
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
-LOCAL_CPPFLAGS += -std=c++1y
-LOCAL_CFLAGS += -fPIE
-LOCAL_CFLAGS += -fvisibility=hidden
+LOCAL_MODULE := lib_root_server
+LOCAL_CPPFLAGS += -std=c++17 -fPIC -fvisibility=hidden -frtti -fexceptions
+LOCAL_SRC_FILES := \
+root_server/root_server.cpp \
+kernel_root_kit/kernel_root_kit_process64_inject.cpp \
+kernel_root_kit/kernel_root_kit_ptrace_arm64_utils.cpp \
+kernel_root_kit/kernel_root_kit_su_install_helper.cpp \
+kernel_root_kit/kernel_root_kit_parasite_app.cpp \
+kernel_root_kit/kernel_root_kit_parasite_patch_elf.cpp \
+utils/cJSON.cpp
+
+LOCAL_SHARED_LIBRARIES := lib_root_server
+include $(BUILD_SHARED_LIBRARY)
+
+
+include $(CLEAR_VARS)
+LOCAL_CPPFLAGS += -std=c++17 -fPIE -fvisibility=hidden -frtti -fexceptions
 LOCAL_LDFLAGS += -fPIE -pie
 LOCAL_DISABLE_FATAL_LINKER_WARNINGS := true
-LOCAL_MODULE    := testRoot.out
-LOCAL_SRC_FILES :=  ../testRoot.cpp ../base64.cpp ../process64_inject.cpp ../ptrace_arm64_utils.cpp ../su_install_helper.cpp
+LOCAL_MODULE := su
+LOCAL_SRC_FILES := \
+su/su.cpp
+
+include $(BUILD_EXECUTABLE)
+
+
+include $(CLEAR_VARS)
+LOCAL_CPPFLAGS += -std=c++17 -fPIE -fvisibility=hidden -frtti -fexceptions
+LOCAL_LDFLAGS += -fPIE -pie
+LOCAL_DISABLE_FATAL_LINKER_WARNINGS := true
+LOCAL_MODULE := testRoot
+LOCAL_SRC_FILES := \
+testRoot.cpp \
+kernel_root_kit/kernel_root_kit_process64_inject.cpp \
+kernel_root_kit/kernel_root_kit_ptrace_arm64_utils.cpp \
+kernel_root_kit/kernel_root_kit_su_install_helper.cpp \
+kernel_root_kit/kernel_root_kit_parasite_app.cpp \
+kernel_root_kit/kernel_root_kit_parasite_patch_elf.cpp
+
 include $(BUILD_EXECUTABLE)
